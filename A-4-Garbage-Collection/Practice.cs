@@ -15,6 +15,41 @@ namespace Advenced.Lesson_4
         /// </summary>
         public static void AL4_P1_P2_P3_5_InstanceCounter()
         {
+            for (int i = 0; i < 5000000; i++)
+            {
+                using (var newCntr = new CntrClass())
+                {
+                    if ((i % 50000) == 0)
+                    {
+                        Console.WriteLine($"{CntrClass.cntr}\t{System.GC.GetTotalMemory(false)}");
+                        System.GC.Collect();
+                        Console.WriteLine($"{CntrClass.cntr}\t{System.GC.GetTotalMemory(false)}");
+                    }
+                    //newCntr.Dispose();
+                }
+            }
+        }
+
+        public class CntrClass  : IDisposable
+        {
+            public static int cntr;
+
+            public CntrClass()
+            {
+                cntr++;
+            }
+
+            public void Dispose()
+            {
+                cntr--;
+                System.GC.SuppressFinalize(this);
+//                Console.WriteLine("Explicit disposing");
+            }
+
+            ~CntrClass()
+            {
+//                Console.WriteLine("Implicit disposing");
+            }
         }
 
         /// <summary>
